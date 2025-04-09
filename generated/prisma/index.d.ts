@@ -1602,10 +1602,12 @@ export namespace Prisma {
 
   export type CompanyCountOutputType = {
     users: number
+    workspaces: number
   }
 
   export type CompanyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | CompanyCountOutputTypeCountUsersArgs
+    workspaces?: boolean | CompanyCountOutputTypeCountWorkspacesArgs
   }
 
   // Custom InputTypes
@@ -1624,6 +1626,13 @@ export namespace Prisma {
    */
   export type CompanyCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountWorkspacesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkspaceWhereInput
   }
 
 
@@ -3096,6 +3105,7 @@ export namespace Prisma {
     updatedAt?: boolean
     deletedAt?: boolean
     users?: boolean | Company$usersArgs<ExtArgs>
+    workspaces?: boolean | Company$workspacesArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["company"]>
 
@@ -3126,6 +3136,7 @@ export namespace Prisma {
   export type CompanyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["company"]>
   export type CompanyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Company$usersArgs<ExtArgs>
+    workspaces?: boolean | Company$workspacesArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CompanyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3135,6 +3146,7 @@ export namespace Prisma {
     name: "Company"
     objects: {
       users: Prisma.$UserPayload<ExtArgs>[]
+      workspaces: Prisma.$WorkspacePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3537,6 +3549,7 @@ export namespace Prisma {
   export interface Prisma__CompanyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     users<T extends Company$usersArgs<ExtArgs> = {}>(args?: Subset<T, Company$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    workspaces<T extends Company$workspacesArgs<ExtArgs> = {}>(args?: Subset<T, Company$workspacesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3983,6 +3996,30 @@ export namespace Prisma {
   }
 
   /**
+   * Company.workspaces
+   */
+  export type Company$workspacesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Workspace
+     */
+    select?: WorkspaceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Workspace
+     */
+    omit?: WorkspaceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkspaceInclude<ExtArgs> | null
+    where?: WorkspaceWhereInput
+    orderBy?: WorkspaceOrderByWithRelationInput | WorkspaceOrderByWithRelationInput[]
+    cursor?: WorkspaceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkspaceScalarFieldEnum | WorkspaceScalarFieldEnum[]
+  }
+
+  /**
    * Company without action
    */
   export type CompanyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4014,6 +4051,7 @@ export namespace Prisma {
   export type WorkspaceMinAggregateOutputType = {
     id: string | null
     name: string | null
+    companyId: string | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -4022,6 +4060,7 @@ export namespace Prisma {
   export type WorkspaceMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    companyId: string | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -4030,6 +4069,7 @@ export namespace Prisma {
   export type WorkspaceCountAggregateOutputType = {
     id: number
     name: number
+    companyId: number
     createdAt: number
     updatedAt: number
     deletedAt: number
@@ -4040,6 +4080,7 @@ export namespace Prisma {
   export type WorkspaceMinAggregateInputType = {
     id?: true
     name?: true
+    companyId?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -4048,6 +4089,7 @@ export namespace Prisma {
   export type WorkspaceMaxAggregateInputType = {
     id?: true
     name?: true
+    companyId?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -4056,6 +4098,7 @@ export namespace Prisma {
   export type WorkspaceCountAggregateInputType = {
     id?: true
     name?: true
+    companyId?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -4137,6 +4180,7 @@ export namespace Prisma {
   export type WorkspaceGroupByOutputType = {
     id: string
     name: string
+    companyId: string | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -4162,56 +4206,70 @@ export namespace Prisma {
   export type WorkspaceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    companyId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     users?: boolean | Workspace$usersArgs<ExtArgs>
     rooms?: boolean | Workspace$roomsArgs<ExtArgs>
+    company?: boolean | Workspace$companyArgs<ExtArgs>
     _count?: boolean | WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workspace"]>
 
   export type WorkspaceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    companyId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    company?: boolean | Workspace$companyArgs<ExtArgs>
   }, ExtArgs["result"]["workspace"]>
 
   export type WorkspaceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    companyId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    company?: boolean | Workspace$companyArgs<ExtArgs>
   }, ExtArgs["result"]["workspace"]>
 
   export type WorkspaceSelectScalar = {
     id?: boolean
     name?: boolean
+    companyId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
   }
 
-  export type WorkspaceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["workspace"]>
+  export type WorkspaceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "companyId" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["workspace"]>
   export type WorkspaceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Workspace$usersArgs<ExtArgs>
     rooms?: boolean | Workspace$roomsArgs<ExtArgs>
+    company?: boolean | Workspace$companyArgs<ExtArgs>
     _count?: boolean | WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type WorkspaceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type WorkspaceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type WorkspaceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | Workspace$companyArgs<ExtArgs>
+  }
+  export type WorkspaceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | Workspace$companyArgs<ExtArgs>
+  }
 
   export type $WorkspacePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Workspace"
     objects: {
       users: Prisma.$WorkspaceUserPayload<ExtArgs>[]
       rooms: Prisma.$RoomPayload<ExtArgs>[]
+      company: Prisma.$CompanyPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      companyId: string | null
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
@@ -4611,6 +4669,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     users<T extends Workspace$usersArgs<ExtArgs> = {}>(args?: Subset<T, Workspace$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkspaceUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rooms<T extends Workspace$roomsArgs<ExtArgs> = {}>(args?: Subset<T, Workspace$roomsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    company<T extends Workspace$companyArgs<ExtArgs> = {}>(args?: Subset<T, Workspace$companyArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4642,6 +4701,7 @@ export namespace Prisma {
   interface WorkspaceFieldRefs {
     readonly id: FieldRef<"Workspace", 'String'>
     readonly name: FieldRef<"Workspace", 'String'>
+    readonly companyId: FieldRef<"Workspace", 'String'>
     readonly createdAt: FieldRef<"Workspace", 'DateTime'>
     readonly updatedAt: FieldRef<"Workspace", 'DateTime'>
     readonly deletedAt: FieldRef<"Workspace", 'DateTime'>
@@ -4894,6 +4954,10 @@ export namespace Prisma {
      */
     data: WorkspaceCreateManyInput | WorkspaceCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkspaceIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -4964,6 +5028,10 @@ export namespace Prisma {
      * Limit how many Workspaces to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkspaceIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -5078,6 +5146,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RoomScalarFieldEnum | RoomScalarFieldEnum[]
+  }
+
+  /**
+   * Workspace.company
+   */
+  export type Workspace$companyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInclude<ExtArgs> | null
+    where?: CompanyWhereInput
   }
 
   /**
@@ -10607,6 +10694,7 @@ export namespace Prisma {
   export const WorkspaceScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    companyId: 'companyId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt'
@@ -10875,6 +10963,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Company"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Company"> | Date | string | null
     users?: UserListRelationFilter
+    workspaces?: WorkspaceListRelationFilter
   }
 
   export type CompanyOrderByWithRelationInput = {
@@ -10884,6 +10973,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     users?: UserOrderByRelationAggregateInput
+    workspaces?: WorkspaceOrderByRelationAggregateInput
   }
 
   export type CompanyWhereUniqueInput = Prisma.AtLeast<{
@@ -10896,6 +10986,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Company"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Company"> | Date | string | null
     users?: UserListRelationFilter
+    workspaces?: WorkspaceListRelationFilter
   }, "id">
 
   export type CompanyOrderByWithAggregationInput = {
@@ -10926,21 +11017,25 @@ export namespace Prisma {
     NOT?: WorkspaceWhereInput | WorkspaceWhereInput[]
     id?: StringFilter<"Workspace"> | string
     name?: StringFilter<"Workspace"> | string
+    companyId?: StringNullableFilter<"Workspace"> | string | null
     createdAt?: DateTimeFilter<"Workspace"> | Date | string
     updatedAt?: DateTimeFilter<"Workspace"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Workspace"> | Date | string | null
     users?: WorkspaceUserListRelationFilter
     rooms?: RoomListRelationFilter
+    company?: XOR<CompanyNullableScalarRelationFilter, CompanyWhereInput> | null
   }
 
   export type WorkspaceOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    companyId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     users?: WorkspaceUserOrderByRelationAggregateInput
     rooms?: RoomOrderByRelationAggregateInput
+    company?: CompanyOrderByWithRelationInput
   }
 
   export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
@@ -10949,16 +11044,19 @@ export namespace Prisma {
     OR?: WorkspaceWhereInput[]
     NOT?: WorkspaceWhereInput | WorkspaceWhereInput[]
     name?: StringFilter<"Workspace"> | string
+    companyId?: StringNullableFilter<"Workspace"> | string | null
     createdAt?: DateTimeFilter<"Workspace"> | Date | string
     updatedAt?: DateTimeFilter<"Workspace"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Workspace"> | Date | string | null
     users?: WorkspaceUserListRelationFilter
     rooms?: RoomListRelationFilter
+    company?: XOR<CompanyNullableScalarRelationFilter, CompanyWhereInput> | null
   }, "id">
 
   export type WorkspaceOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    companyId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -10973,6 +11071,7 @@ export namespace Prisma {
     NOT?: WorkspaceScalarWhereWithAggregatesInput | WorkspaceScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Workspace"> | string
     name?: StringWithAggregatesFilter<"Workspace"> | string
+    companyId?: StringNullableWithAggregatesFilter<"Workspace"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Workspace"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Workspace"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Workspace"> | Date | string | null
@@ -11387,6 +11486,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     users?: UserCreateNestedManyWithoutCompanyInput
+    workspaces?: WorkspaceCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateInput = {
@@ -11396,6 +11496,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     users?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    workspaces?: WorkspaceUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUpdateInput = {
@@ -11405,6 +11506,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: UserUpdateManyWithoutCompanyNestedInput
+    workspaces?: WorkspaceUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateInput = {
@@ -11414,6 +11516,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    workspaces?: WorkspaceUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateManyInput = {
@@ -11448,11 +11551,13 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     users?: WorkspaceUserCreateNestedManyWithoutWorkspaceInput
     rooms?: RoomCreateNestedManyWithoutWorkspaceInput
+    company?: CompanyCreateNestedOneWithoutWorkspacesInput
   }
 
   export type WorkspaceUncheckedCreateInput = {
     id: string
     name: string
+    companyId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -11468,11 +11573,13 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
     rooms?: RoomUpdateManyWithoutWorkspaceNestedInput
+    company?: CompanyUpdateOneWithoutWorkspacesNestedInput
   }
 
   export type WorkspaceUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11483,6 +11590,7 @@ export namespace Prisma {
   export type WorkspaceCreateManyInput = {
     id: string
     name: string
+    companyId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -11499,6 +11607,7 @@ export namespace Prisma {
   export type WorkspaceUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12015,7 +12124,17 @@ export namespace Prisma {
     none?: UserWhereInput
   }
 
+  export type WorkspaceListRelationFilter = {
+    every?: WorkspaceWhereInput
+    some?: WorkspaceWhereInput
+    none?: WorkspaceWhereInput
+  }
+
   export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WorkspaceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -12056,6 +12175,7 @@ export namespace Prisma {
   export type WorkspaceCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    companyId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -12064,6 +12184,7 @@ export namespace Prisma {
   export type WorkspaceMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    companyId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -12072,6 +12193,7 @@ export namespace Prisma {
   export type WorkspaceMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    companyId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -12473,11 +12595,25 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
+  export type WorkspaceCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<WorkspaceCreateWithoutCompanyInput, WorkspaceUncheckedCreateWithoutCompanyInput> | WorkspaceCreateWithoutCompanyInput[] | WorkspaceUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: WorkspaceCreateOrConnectWithoutCompanyInput | WorkspaceCreateOrConnectWithoutCompanyInput[]
+    createMany?: WorkspaceCreateManyCompanyInputEnvelope
+    connect?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutCompanyInput = {
     create?: XOR<UserCreateWithoutCompanyInput, UserUncheckedCreateWithoutCompanyInput> | UserCreateWithoutCompanyInput[] | UserUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: UserCreateOrConnectWithoutCompanyInput | UserCreateOrConnectWithoutCompanyInput[]
     createMany?: UserCreateManyCompanyInputEnvelope
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type WorkspaceUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<WorkspaceCreateWithoutCompanyInput, WorkspaceUncheckedCreateWithoutCompanyInput> | WorkspaceCreateWithoutCompanyInput[] | WorkspaceUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: WorkspaceCreateOrConnectWithoutCompanyInput | WorkspaceCreateOrConnectWithoutCompanyInput[]
+    createMany?: WorkspaceCreateManyCompanyInputEnvelope
+    connect?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
   }
 
   export type UserUpdateManyWithoutCompanyNestedInput = {
@@ -12494,6 +12630,20 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type WorkspaceUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<WorkspaceCreateWithoutCompanyInput, WorkspaceUncheckedCreateWithoutCompanyInput> | WorkspaceCreateWithoutCompanyInput[] | WorkspaceUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: WorkspaceCreateOrConnectWithoutCompanyInput | WorkspaceCreateOrConnectWithoutCompanyInput[]
+    upsert?: WorkspaceUpsertWithWhereUniqueWithoutCompanyInput | WorkspaceUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: WorkspaceCreateManyCompanyInputEnvelope
+    set?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
+    disconnect?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
+    delete?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
+    connect?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
+    update?: WorkspaceUpdateWithWhereUniqueWithoutCompanyInput | WorkspaceUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: WorkspaceUpdateManyWithWhereWithoutCompanyInput | WorkspaceUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: WorkspaceScalarWhereInput | WorkspaceScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutCompanyNestedInput = {
     create?: XOR<UserCreateWithoutCompanyInput, UserUncheckedCreateWithoutCompanyInput> | UserCreateWithoutCompanyInput[] | UserUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: UserCreateOrConnectWithoutCompanyInput | UserCreateOrConnectWithoutCompanyInput[]
@@ -12508,6 +12658,20 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type WorkspaceUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<WorkspaceCreateWithoutCompanyInput, WorkspaceUncheckedCreateWithoutCompanyInput> | WorkspaceCreateWithoutCompanyInput[] | WorkspaceUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: WorkspaceCreateOrConnectWithoutCompanyInput | WorkspaceCreateOrConnectWithoutCompanyInput[]
+    upsert?: WorkspaceUpsertWithWhereUniqueWithoutCompanyInput | WorkspaceUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: WorkspaceCreateManyCompanyInputEnvelope
+    set?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
+    disconnect?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
+    delete?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
+    connect?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
+    update?: WorkspaceUpdateWithWhereUniqueWithoutCompanyInput | WorkspaceUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: WorkspaceUpdateManyWithWhereWithoutCompanyInput | WorkspaceUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: WorkspaceScalarWhereInput | WorkspaceScalarWhereInput[]
+  }
+
   export type WorkspaceUserCreateNestedManyWithoutWorkspaceInput = {
     create?: XOR<WorkspaceUserCreateWithoutWorkspaceInput, WorkspaceUserUncheckedCreateWithoutWorkspaceInput> | WorkspaceUserCreateWithoutWorkspaceInput[] | WorkspaceUserUncheckedCreateWithoutWorkspaceInput[]
     connectOrCreate?: WorkspaceUserCreateOrConnectWithoutWorkspaceInput | WorkspaceUserCreateOrConnectWithoutWorkspaceInput[]
@@ -12520,6 +12684,12 @@ export namespace Prisma {
     connectOrCreate?: RoomCreateOrConnectWithoutWorkspaceInput | RoomCreateOrConnectWithoutWorkspaceInput[]
     createMany?: RoomCreateManyWorkspaceInputEnvelope
     connect?: RoomWhereUniqueInput | RoomWhereUniqueInput[]
+  }
+
+  export type CompanyCreateNestedOneWithoutWorkspacesInput = {
+    create?: XOR<CompanyCreateWithoutWorkspacesInput, CompanyUncheckedCreateWithoutWorkspacesInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutWorkspacesInput
+    connect?: CompanyWhereUniqueInput
   }
 
   export type WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput = {
@@ -12562,6 +12732,16 @@ export namespace Prisma {
     update?: RoomUpdateWithWhereUniqueWithoutWorkspaceInput | RoomUpdateWithWhereUniqueWithoutWorkspaceInput[]
     updateMany?: RoomUpdateManyWithWhereWithoutWorkspaceInput | RoomUpdateManyWithWhereWithoutWorkspaceInput[]
     deleteMany?: RoomScalarWhereInput | RoomScalarWhereInput[]
+  }
+
+  export type CompanyUpdateOneWithoutWorkspacesNestedInput = {
+    create?: XOR<CompanyCreateWithoutWorkspacesInput, CompanyUncheckedCreateWithoutWorkspacesInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutWorkspacesInput
+    upsert?: CompanyUpsertWithoutWorkspacesInput
+    disconnect?: CompanyWhereInput | boolean
+    delete?: CompanyWhereInput | boolean
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutWorkspacesInput, CompanyUpdateWithoutWorkspacesInput>, CompanyUncheckedUpdateWithoutWorkspacesInput>
   }
 
   export type WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput = {
@@ -13033,6 +13213,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    workspaces?: WorkspaceCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutUsersInput = {
@@ -13041,6 +13222,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    workspaces?: WorkspaceUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutUsersInput = {
@@ -13143,6 +13325,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workspaces?: WorkspaceUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutUsersInput = {
@@ -13151,6 +13334,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workspaces?: WorkspaceUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type WorkspaceUserUpsertWithWhereUniqueWithoutUserInput = {
@@ -13271,6 +13455,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type WorkspaceCreateWithoutCompanyInput = {
+    id: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    users?: WorkspaceUserCreateNestedManyWithoutWorkspaceInput
+    rooms?: RoomCreateNestedManyWithoutWorkspaceInput
+  }
+
+  export type WorkspaceUncheckedCreateWithoutCompanyInput = {
+    id: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    users?: WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
+    rooms?: RoomUncheckedCreateNestedManyWithoutWorkspaceInput
+  }
+
+  export type WorkspaceCreateOrConnectWithoutCompanyInput = {
+    where: WorkspaceWhereUniqueInput
+    create: XOR<WorkspaceCreateWithoutCompanyInput, WorkspaceUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type WorkspaceCreateManyCompanyInputEnvelope = {
+    data: WorkspaceCreateManyCompanyInput | WorkspaceCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutCompanyInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutCompanyInput, UserUncheckedUpdateWithoutCompanyInput>
@@ -13298,6 +13512,34 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+  }
+
+  export type WorkspaceUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: WorkspaceWhereUniqueInput
+    update: XOR<WorkspaceUpdateWithoutCompanyInput, WorkspaceUncheckedUpdateWithoutCompanyInput>
+    create: XOR<WorkspaceCreateWithoutCompanyInput, WorkspaceUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type WorkspaceUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: WorkspaceWhereUniqueInput
+    data: XOR<WorkspaceUpdateWithoutCompanyInput, WorkspaceUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type WorkspaceUpdateManyWithWhereWithoutCompanyInput = {
+    where: WorkspaceScalarWhereInput
+    data: XOR<WorkspaceUpdateManyMutationInput, WorkspaceUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type WorkspaceScalarWhereInput = {
+    AND?: WorkspaceScalarWhereInput | WorkspaceScalarWhereInput[]
+    OR?: WorkspaceScalarWhereInput[]
+    NOT?: WorkspaceScalarWhereInput | WorkspaceScalarWhereInput[]
+    id?: StringFilter<"Workspace"> | string
+    name?: StringFilter<"Workspace"> | string
+    companyId?: StringNullableFilter<"Workspace"> | string | null
+    createdAt?: DateTimeFilter<"Workspace"> | Date | string
+    updatedAt?: DateTimeFilter<"Workspace"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Workspace"> | Date | string | null
   }
 
   export type WorkspaceUserCreateWithoutWorkspaceInput = {
@@ -13356,6 +13598,29 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CompanyCreateWithoutWorkspacesInput = {
+    id: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    users?: UserCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutWorkspacesInput = {
+    id: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    users?: UserUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutWorkspacesInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutWorkspacesInput, CompanyUncheckedCreateWithoutWorkspacesInput>
+  }
+
   export type WorkspaceUserUpsertWithWhereUniqueWithoutWorkspaceInput = {
     where: WorkspaceUserWhereUniqueInput
     update: XOR<WorkspaceUserUpdateWithoutWorkspaceInput, WorkspaceUserUncheckedUpdateWithoutWorkspaceInput>
@@ -13400,6 +13665,35 @@ export namespace Prisma {
     workspaceId?: StringFilter<"Room"> | string
   }
 
+  export type CompanyUpsertWithoutWorkspacesInput = {
+    update: XOR<CompanyUpdateWithoutWorkspacesInput, CompanyUncheckedUpdateWithoutWorkspacesInput>
+    create: XOR<CompanyCreateWithoutWorkspacesInput, CompanyUncheckedCreateWithoutWorkspacesInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutWorkspacesInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutWorkspacesInput, CompanyUncheckedUpdateWithoutWorkspacesInput>
+  }
+
+  export type CompanyUpdateWithoutWorkspacesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    users?: UserUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutWorkspacesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    users?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
   export type UserCreateWithoutWorkspacesInput = {
     id: string
     username: string
@@ -13436,11 +13730,13 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     rooms?: RoomCreateNestedManyWithoutWorkspaceInput
+    company?: CompanyCreateNestedOneWithoutWorkspacesInput
   }
 
   export type WorkspaceUncheckedCreateWithoutUsersInput = {
     id: string
     name: string
+    companyId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -13505,11 +13801,13 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rooms?: RoomUpdateManyWithoutWorkspaceNestedInput
+    company?: CompanyUpdateOneWithoutWorkspacesNestedInput
   }
 
   export type WorkspaceUncheckedUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -13523,11 +13821,13 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     users?: WorkspaceUserCreateNestedManyWithoutWorkspaceInput
+    company?: CompanyCreateNestedOneWithoutWorkspacesInput
   }
 
   export type WorkspaceUncheckedCreateWithoutRoomsInput = {
     id: string
     name: string
+    companyId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -13611,11 +13911,13 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
+    company?: CompanyUpdateOneWithoutWorkspacesNestedInput
   }
 
   export type WorkspaceUncheckedUpdateWithoutRoomsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -14105,6 +14407,14 @@ export namespace Prisma {
     deletedAt?: Date | string | null
   }
 
+  export type WorkspaceCreateManyCompanyInput = {
+    id: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
   export type UserUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
@@ -14133,6 +14443,34 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type WorkspaceUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    users?: WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
+    rooms?: RoomUpdateManyWithoutWorkspaceNestedInput
+  }
+
+  export type WorkspaceUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    users?: WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
+    rooms?: RoomUncheckedUpdateManyWithoutWorkspaceNestedInput
+  }
+
+  export type WorkspaceUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

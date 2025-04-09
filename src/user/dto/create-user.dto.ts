@@ -5,6 +5,7 @@ const createUserSchema = z
   .object({
     username: z.string().min(1).max(100),
     displayName: z.string().min(1).max(100),
+    companyId: z.string().optional(),
   })
   .required()
 
