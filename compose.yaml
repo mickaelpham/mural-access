@@ -1,0 +1,14 @@
+services:
+  app_db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: tactivos
+      POSTGRES_PASSWORD: very_secure
+      POSTGRES_DB: tactivos
+    ports:
+      - 5432:5432
+    volumes:
+      - app_db_data:/var/lib/postgresql/data
+
+volumes:
+  app_db_data:
