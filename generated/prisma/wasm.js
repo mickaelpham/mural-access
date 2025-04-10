@@ -189,6 +189,32 @@ exports.Prisma.MuralUserScalarFieldEnum = {
   role: 'role'
 };
 
+exports.Prisma.GroupScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.GroupUserScalarFieldEnum = {
+  userId: 'userId',
+  groupId: 'groupId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.GroupWorkspaceScalarFieldEnum = {
+  groupId: 'groupId',
+  workspaceId: 'workspaceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  role: 'role'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -223,6 +249,11 @@ exports.MuralUserRole = exports.$Enums.MuralUserRole = {
   VIEWER: 'VIEWER'
 };
 
+exports.GroupWorkspaceRole = exports.$Enums.GroupWorkspaceRole = {
+  ADMIN: 'ADMIN',
+  MEMBER: 'MEMBER'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Company: 'Company',
@@ -231,7 +262,10 @@ exports.Prisma.ModelName = {
   Room: 'Room',
   RoomUser: 'RoomUser',
   Mural: 'Mural',
-  MuralUser: 'MuralUser'
+  MuralUser: 'MuralUser',
+  Group: 'Group',
+  GroupUser: 'GroupUser',
+  GroupWorkspace: 'GroupWorkspace'
 };
 
 /**

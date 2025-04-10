@@ -26,7 +26,8 @@ model User {
   company    Company?        @relation(fields: [companyId], references: [id])
   workspaces WorkspaceUser[]
   rooms      RoomUser[]
-  MuralUser  MuralUser[]
+  murals     MuralUser[]
+  groups     GroupUser[]
 
   @@index(deletedAt)
   @@index(companyId)
@@ -42,6 +43,7 @@ model Company {
 
   users      User[]
   workspaces Workspace[]
+  groups     Group[]
 
   @@index(deletedAt)
   @@map("company")
@@ -57,7 +59,8 @@ model Workspace {
 
   users   WorkspaceUser[]
   rooms   Room[]
-  company Company?        @relation(fields: [companyId], references: [id])
+  company Company?         @relation(fields: [companyId], references: [id])
+  groups  GroupWorkspace[]
 
   @@index(deletedAt)
   @@index(companyId)
@@ -169,4 +172,59 @@ model MuralUser {
   @@index(deletedAt)
   @@index([muralId, role])
   @@map("mural_user")
+}
+
+model Group {
+  id        String    @id
+  companyId String    @map("company_id")
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  company    Company          @relation(fields: [companyId], references: [id])
+  users      GroupUser[]
+  workspaces GroupWorkspace[]
+
+  @@index(companyId)
+  @@index(deletedAt)
+  @@map("group")
+}
+
+model GroupUser {
+  userId    String    @map("user_id")
+  groupId   String    @map("group_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
+
+  @@id([groupId, userId])
+  @@index(userId)
+  @@index(deletedAt)
+  @@map("group_user")
+}
+
+enum GroupWorkspaceRole {
+  ADMIN
+  MEMBER
+}
+
+model GroupWorkspace {
+  groupId     String             @map("group_id")
+  workspaceId String             @map("workspace_id")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+  deletedAt   DateTime?          @map("deleted_at")
+  role        GroupWorkspaceRole
+
+  group     Group     @relation(fields: [groupId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@id([groupId, workspaceId])
+  @@index(workspaceId)
+  @@index(deletedAt)
+  @@map("group_workspace")
 }

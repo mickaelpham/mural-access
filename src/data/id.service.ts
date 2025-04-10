@@ -3,6 +3,7 @@ import { monotonicFactory, ULIDFactory } from 'ulid'
 
 const prefix = {
   company: 'cpy_',
+  group: 'grp_',
   mural: 'mrl_',
   room: 'r_',
   user: 'usr_',
