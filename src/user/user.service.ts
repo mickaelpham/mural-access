@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { IdService } from '../data/id.service'
 import { PrismaService } from '../data/prisma.service'
 import { Prisma, User } from '../../generated/prisma'
-import { CreateUserDto } from './dto/create-user.dto'
-import { ListUserDto } from './dto/list-user.dto'
+import { CreateUserRequestDto } from './dto/create-user-request.dto'
+import { UserListRequestDto } from './dto/user-list-request.dto'
 
 @Injectable()
 export class UserService {
@@ -12,7 +12,7 @@ export class UserService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async create({ companyId, displayName, username }: CreateUserDto) {
+  async create({ companyId, displayName, username }: CreateUserRequestDto) {
     const id = this.idService.generate('user')
     const user = await this.prismaService.user.create({
       data: { id, displayName, username, companyId },
@@ -24,7 +24,7 @@ export class UserService {
     return await this.prismaService.user.findUnique({ where: { id } })
   }
 
-  async list(dto: ListUserDto): Promise<[boolean, User[]]> {
+  async list(dto: UserListRequestDto): Promise<[boolean, User[]]> {
     // Always query one more record to tell the user if they should query
     // for the next records or not
     const size = dto.size + 1

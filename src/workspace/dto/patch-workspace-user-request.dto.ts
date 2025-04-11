@@ -1,7 +1,7 @@
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
 
-const patchWorkspaceUserSchema = z
+const patchWorkspaceUserRequestSchema = z
   .object({
     operation: z.enum(['add', 'replace', 'remove']),
     userId: z.string().nonempty(),
@@ -9,6 +9,6 @@ const patchWorkspaceUserSchema = z
   })
   .array()
 
-export class PatchWorkspaceUserDto extends createZodDto(
-  patchWorkspaceUserSchema,
+export class PatchWorkspaceUserRequestDto extends createZodDto(
+  patchWorkspaceUserRequestSchema,
 ) {}

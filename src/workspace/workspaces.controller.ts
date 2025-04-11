@@ -1,14 +1,86 @@
-import { Controller, Get, Query } from '@nestjs/common'
-import { ListWorkspaceDto } from './dto/list-workspace.dto'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common'
+import { WorkspaceListRequestDto } from './dto/workspace-list-request.dto'
 import { WorkspaceService } from './workspace.service'
+import { UserService } from '../user/user.service'
+import { CreateWorkspaceRequestDto } from './dto/create-workspace-request.dto'
+import { WorkspaceUserListRequestDto } from './dto/workspace-user-list-request.dto'
+import { PatchWorkspaceUserRequestDto } from './dto/patch-workspace-user-request.dto'
+import { WorkspaceUserListResponseDto } from './dto/workspace-user-list-response.dto'
 
 @Controller('workspaces')
 export class WorkspacesController {
-  constructor(private readonly workspaceService: WorkspaceService) {}
+  constructor(
+    private readonly workspaceService: WorkspaceService,
+    private readonly userService: UserService,
+  ) {}
 
+  /**
+   * List all workspaces
+   */
   @Get()
-  async list(@Query() dto: ListWorkspaceDto) {
+  async list(@Query() dto: WorkspaceListRequestDto) {
     const [hasMore, workspaces] = await this.workspaceService.list(dto)
     return { data: workspaces, hasMore, size: workspaces.length }
+  }
+
+  /**
+   * Create a new workspace
+   */
+  @Post()
+  async create(@Body() dto: CreateWorkspaceRequestDto) {
+    const user = await this.userService.getById(dto.adminUserId)
+    if (!user) {
+      throw new BadRequestException('admin does not exist')
+    }
+
+    return await this.workspaceService.create({
+      admin: user,
+      name: dto.workspaceName,
+    })
+  }
+
+  /**
+   * Retrieve a specific workspace details
+   */
+  @Get('/:id')
+  async show(@Param('id') workspaceId: string) {
+    return await this.workspaceService.getById(workspaceId)
+  }
+
+  /**
+   * List users of a specific workspace
+   */
+  @Get(':id/users')
+  async listUsers(
+    @Param('id') workspaceId: string,
+    @Query() dto: WorkspaceUserListRequestDto,
+  ): Promise<WorkspaceUserListResponseDto> {
+    const [hasMore, users] = await this.workspaceService.listUsers(
+      workspaceId,
+      dto,
+    )
+    return { data: users, hasMore, size: users.length }
+  }
+
+  /**
+   * Add, replace, and remove users for a specific workspace
+   */
+  @Patch(':id/users')
+  @HttpCode(204)
+  async updateUsers(
+    @Param('id') workspaceId: string,
+    @Body() list: PatchWorkspaceUserRequestDto,
+  ): Promise<void> {
+    await this.workspaceService.updateUsers(workspaceId, list)
   }
 }

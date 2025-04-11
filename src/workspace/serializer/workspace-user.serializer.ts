@@ -1,15 +1,5 @@
 import { User, WorkspaceUser } from '../../../generated/prisma'
-
-export type WorkspaceUserDto = {
-  createdAt: WorkspaceUser['createdAt']
-  updatedAt: WorkspaceUser['updatedAt']
-  deletedAt: WorkspaceUser['deletedAt']
-  role: WorkspaceUser['role']
-  userId: User['id']
-  userCompanyId: User['companyId']
-  username: User['username']
-  displayName: User['displayName']
-}
+import { WorkspaceUserResponseDto } from '../dto/workspace-user-list-response.dto'
 
 type Params = {
   createdAt: WorkspaceUser['createdAt']
@@ -24,7 +14,7 @@ type Params = {
   }
 }
 
-export function serializeWorkspaceUser(data: Params): WorkspaceUserDto {
+export function serializeWorkspaceUser(data: Params): WorkspaceUserResponseDto {
   return {
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,

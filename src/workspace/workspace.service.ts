@@ -2,13 +2,11 @@ import { Injectable } from '@nestjs/common'
 import { IdService } from '../data/id.service'
 import { PrismaService } from '../data/prisma.service'
 import { Prisma, User, Workspace, WorkspaceUser } from '../../generated/prisma'
-import { ListWorkspaceDto } from './dto/list-workspace.dto'
-import { ListUserDto } from './dto/list-user.dto'
-import {
-  serializeWorkspaceUser,
-  WorkspaceUserDto,
-} from './serializer/workspace-user.serializer'
-import { PatchWorkspaceUserDto } from './dto/patch-workspace-user.dto'
+import { WorkspaceListRequestDto } from './dto/workspace-list-request.dto'
+import { WorkspaceUserListRequestDto } from './dto/workspace-user-list-request.dto'
+import { serializeWorkspaceUser } from './serializer/workspace-user.serializer'
+import { PatchWorkspaceUserRequestDto } from './dto/patch-workspace-user-request.dto'
+import { WorkspaceUserResponseDto } from './dto/workspace-user-list-response.dto'
 
 @Injectable()
 export class WorkspaceService {
@@ -41,7 +39,7 @@ export class WorkspaceService {
     return workspace
   }
 
-  async list(dto: ListWorkspaceDto): Promise<[boolean, Workspace[]]> {
+  async list(dto: WorkspaceListRequestDto): Promise<[boolean, Workspace[]]> {
     // Always query one more record to tell the user if they should query
     // for the next records or not
     const size = dto.size + 1
@@ -69,8 +67,8 @@ export class WorkspaceService {
 
   async listUsers(
     workspaceId: Workspace['id'],
-    dto: ListUserDto,
-  ): Promise<[boolean, WorkspaceUserDto[]]> {
+    dto: WorkspaceUserListRequestDto,
+  ): Promise<[boolean, WorkspaceUserResponseDto[]]> {
     // Always query one more record to tell the user if they should query
     // for the next records or not
     const size = dto.size + 1
@@ -109,7 +107,10 @@ export class WorkspaceService {
     return [hasMore, result.map(serializeWorkspaceUser)]
   }
 
-  async updateUsers(workspaceId: Workspace['id'], list: PatchWorkspaceUserDto) {
+  async updateUsers(
+    workspaceId: Workspace['id'],
+    list: PatchWorkspaceUserRequestDto,
+  ) {
     const addList: Prisma.WorkspaceUserCreateManyInput[] = []
     const removeList: Array<User['id']> = []
     const replaceList: Record<WorkspaceUser['role'], Array<User['id']>> = {
