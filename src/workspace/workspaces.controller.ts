@@ -16,12 +16,14 @@ import { CreateWorkspaceRequestDto } from './dto/create-workspace-request.dto'
 import { WorkspaceUserListRequestDto } from './dto/workspace-user-list-request.dto'
 import { PatchWorkspaceUserRequestDto } from './dto/patch-workspace-user-request.dto'
 import { WorkspaceUserListResponseDto } from './dto/workspace-user-list-response.dto'
+import { WorkspaceUserService } from './workspace-user.service'
 
 @Controller('workspaces')
 export class WorkspacesController {
   constructor(
-    private readonly workspaceService: WorkspaceService,
     private readonly userService: UserService,
+    private readonly workspaceService: WorkspaceService,
+    private readonly workspaceUserService: WorkspaceUserService,
   ) {}
 
   /**
@@ -65,7 +67,7 @@ export class WorkspacesController {
     @Param('id') workspaceId: string,
     @Query() dto: WorkspaceUserListRequestDto,
   ): Promise<WorkspaceUserListResponseDto> {
-    const [hasMore, users] = await this.workspaceService.listUsers(
+    const [hasMore, users] = await this.workspaceUserService.listUsers(
       workspaceId,
       dto,
     )
@@ -81,6 +83,6 @@ export class WorkspacesController {
     @Param('id') workspaceId: string,
     @Body() list: PatchWorkspaceUserRequestDto,
   ): Promise<void> {
-    await this.workspaceService.updateUsers(workspaceId, list)
+    await this.workspaceUserService.updateUsers(workspaceId, list)
   }
 }
