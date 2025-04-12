@@ -3,11 +3,13 @@ import { IdService } from '../data/id.service'
 import { PrismaService } from '../data/prisma.service'
 import { Prisma, User, Workspace } from '../../generated/prisma'
 import { WorkspaceListRequestDto } from './dto/workspace-list-request.dto'
+import { OpenFgaService } from '../data/open-fga.service'
 
 @Injectable()
 export class WorkspaceService {
   constructor(
     private readonly idService: IdService,
+    private readonly openFgaService: OpenFgaService,
     private readonly prismaService: PrismaService,
   ) {}
 
@@ -17,6 +19,18 @@ export class WorkspaceService {
       data: { id, name, companyId: admin.companyId },
     })
 
+    // connect this workspace to the user
+    await this.openFgaService.write({
+      writes: [
+        {
+          user: `user:${admin.id}`,
+          relation: 'admin',
+          object: `workspace:${workspace.id}`,
+        },
+      ],
+    })
+
+    // [admin] add the admin to the workspace user table
     await this.prismaService.workspaceUser.create({
       data: {
         user: { connect: admin },

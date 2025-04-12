@@ -5,10 +5,14 @@ import { PatchWorkspaceUserRequestDto } from './dto/patch-workspace-user-request
 import { WorkspaceUserResponseDto } from './dto/workspace-user-list-response.dto'
 import { Workspace, Prisma, User, WorkspaceUser } from '../../generated/prisma'
 import { PrismaService } from '../data/prisma.service'
+import { OpenFgaService } from '../data/open-fga.service'
 
 @Injectable()
 export class WorkspaceUserService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly openFgaService: OpenFgaService,
+    private readonly prismaService: PrismaService,
+  ) {}
 
   async listUsers(
     workspaceId: Workspace['id'],
@@ -96,5 +100,17 @@ export class WorkspaceUserService {
         data: { role },
       })
     }
+  }
+
+  async canAccess(user: Pick<User, 'id'>, workspace: Pick<Workspace, 'id'>) {
+    // run a check
+    const response = await this.openFgaService.check({
+      user: `user:${user.id}`,
+      relation: 'can_access',
+      object: `workspace:${workspace.id}`,
+    })
+
+    console.log(response)
+    return !!response.allowed
   }
 }

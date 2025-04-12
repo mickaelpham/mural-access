@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   Param,
@@ -17,6 +18,7 @@ import { WorkspaceUserListRequestDto } from './dto/workspace-user-list-request.d
 import { PatchWorkspaceUserRequestDto } from './dto/patch-workspace-user-request.dto'
 import { WorkspaceUserListResponseDto } from './dto/workspace-user-list-response.dto'
 import { WorkspaceUserService } from './workspace-user.service'
+import { ShowWorkspaceRequestSchemaDto } from './dto/show-workspace-request.dto'
 
 @Controller('workspaces')
 export class WorkspacesController {
@@ -54,8 +56,21 @@ export class WorkspacesController {
   /**
    * Retrieve a specific workspace details
    */
-  @Get('/:id')
-  async show(@Param('id') workspaceId: string) {
+  @Get(':id')
+  async show(
+    @Param('id') workspaceId: string,
+    @Query() dto: ShowWorkspaceRequestSchemaDto,
+  ) {
+    console.log('trying to access workspace as', dto)
+
+    const allowed = await this.workspaceUserService.canAccess(
+      { id: dto.as },
+      { id: workspaceId },
+    )
+    if (!allowed) {
+      throw new ForbiddenException()
+    }
+
     return await this.workspaceService.getById(workspaceId)
   }
 

@@ -10,5 +10,45 @@ services:
     volumes:
       - app_db_data:/var/lib/postgresql/data
 
+  openfga_db:
+    image: postgres:14
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: openfga
+      POSTGRES_PASSWORD: another_password
+      POSTGRES_DB: openfga
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U openfga']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  openfga_migrate:
+    depends_on:
+      openfga_db:
+        condition: service_healthy
+    image: openfga/openfga:latest
+    command: migrate
+    environment:
+      OPENFGA_DATASTORE_ENGINE: postgres
+      OPENFGA_DATASTORE_URI: postgres://openfga:another_password@openfga_db:5432/openfga?sslmode=disable
+
+  openfga:
+    depends_on:
+      openfga_migrate:
+        condition: service_completed_successfully
+    image: openfga/openfga:latest
+    environment:
+      OPENFGA_DATASTORE_ENGINE: postgres
+      OPENFGA_DATASTORE_URI: postgres://openfga:another_password@openfga_db:5432/openfga?sslmode=disable
+      OPENFGA_LOG_FORMAT: json
+    command: run
+    ports:
+      # Needed for the HTTP server
+      - 8080:8080
+      # Needed for the playground (do NOT enable in prod!)
+      - 3001:3000
+
 volumes:
   app_db_data:
