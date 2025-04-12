@@ -27,3 +27,7 @@ type workspace
     define can_access: guest or member or admin
     define can_edit_settings: admin
 ```
+
+## Roadmap
+
+I still need to find a good way to un-delete entities. The query is funky.

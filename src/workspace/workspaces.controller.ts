@@ -120,7 +120,6 @@ export class WorkspacesController {
       workspaceId,
       dto.map((op) => op.userId),
     )
-    console.log('found those users to edit', { workspaceUsers })
 
     await this.workspaceUserService.updateUsers(
       workspaceId,

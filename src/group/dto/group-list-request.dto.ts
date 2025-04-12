@@ -1,17 +1,17 @@
-import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
 import { entityId } from '../../data/id.service'
+import { createZodDto } from 'nestjs-zod'
 
-const userListRequestSchema = z.object({
+const groupListRequestSchema = z.object({
   companyId: entityId('company').optional(),
-  endingBefore: entityId('user').optional(),
+  endingBefore: entityId('group').optional(),
   size: z.coerce.number().int().min(1).max(100).optional().default(20),
   sortDirection: z.enum(['asc', 'desc']).optional().default('asc'),
   sortField: z
-    .enum(['createdAt', 'updatedAt', 'username', 'displayName'])
+    .enum(['createdAt', 'updatedAt', 'name'])
     .optional()
     .default('updatedAt'),
-  startingAfter: entityId('user').optional(),
+  startingAfter: entityId('group').optional(),
 })
 
-export class UserListRequestDto extends createZodDto(userListRequestSchema) {}
+export class GroupListRequestDto extends createZodDto(groupListRequestSchema) {}

@@ -5,9 +5,16 @@ import { APP_PIPE } from '@nestjs/core'
 import { ZodValidationPipe } from 'nestjs-zod'
 import { WorkspaceModule } from './workspace/workspace.module'
 import { CompanyModule } from './company/company.module'
+import { GroupModule } from './group/group.module'
 
 @Module({
-  imports: [DataModule, UserModule, WorkspaceModule, CompanyModule],
+  imports: [
+    DataModule,
+    UserModule,
+    WorkspaceModule,
+    CompanyModule,
+    GroupModule,
+  ],
   providers: [
     {
       provide: APP_PIPE,

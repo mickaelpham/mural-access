@@ -1,7 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import { monotonicFactory, ULIDFactory } from 'ulid'
+import { z } from 'zod'
 
-const prefix = {
+const PREFIXES = {
   company: 'cpy_',
   group: 'grp_',
   mural: 'mrl_',
@@ -10,7 +11,18 @@ const prefix = {
   workspace: 'wrk_',
 } as const
 
-type Model = keyof typeof prefix
+type Model = keyof typeof PREFIXES
+
+/**
+ * Utility function validating that the input format matches a
+ * specific ID format
+ */
+export function entityId(model: Model) {
+  const prefix = PREFIXES[model]
+  const length = prefix.length + 26 // ULID length
+
+  return z.string().length(length).startsWith(prefix)
+}
 
 @Injectable()
 export class IdService implements OnModuleInit {
@@ -21,6 +33,6 @@ export class IdService implements OnModuleInit {
   }
 
   generate(model: Model) {
-    return prefix[model] + this.ulid()
+    return PREFIXES[model] + this.ulid()
   }
 }
