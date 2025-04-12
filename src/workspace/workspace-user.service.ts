@@ -6,6 +6,10 @@ import { WorkspaceUserResponseDto } from './dto/workspace-user-list-response.dto
 import { Workspace, Prisma, User, WorkspaceUser } from '../../generated/prisma'
 import { PrismaService } from '../data/prisma.service'
 import { OpenFgaService } from '../data/open-fga.service'
+import { TupleKey, TupleKeyWithoutCondition } from '@openfga/sdk'
+import { keyBy } from 'lodash'
+
+const WORKSPACE_USER_ROLES = ['ADMIN', 'GUEST', 'MEMBER'] as const
 
 @Injectable()
 export class WorkspaceUserService {
@@ -58,7 +62,8 @@ export class WorkspaceUserService {
 
   async updateUsers(
     workspaceId: Workspace['id'],
-    list: PatchWorkspaceUserRequestDto,
+    dto: PatchWorkspaceUserRequestDto,
+    workspaceUsers: WorkspaceUser[],
   ) {
     const addList: Prisma.WorkspaceUserCreateManyInput[] = []
     const removeList: Array<User['id']> = []
@@ -67,8 +72,11 @@ export class WorkspaceUserService {
       GUEST: [],
       MEMBER: [],
     }
+    const writeTuples: TupleKey[] = []
+    const deleteTuples: TupleKeyWithoutCondition[] = []
+    const workspaceUsersMap = keyBy(workspaceUsers, 'userId')
 
-    for (const op of list) {
+    for (const op of dto) {
       switch (op.operation) {
         case 'add':
           addList.push({
@@ -76,41 +84,89 @@ export class WorkspaceUserService {
             userId: op.userId,
             role: op.role,
           })
+
+          writeTuples.push({
+            user: `user:${op.userId}`,
+            relation: op.role.toLocaleLowerCase(),
+            object: `workspace:${workspaceId}`,
+          })
           break
         case 'remove':
           removeList.push(op.userId)
+
+          deleteTuples.push({
+            user: `user:${op.userId}`,
+            relation: workspaceUsersMap[op.userId].role.toLocaleLowerCase(),
+            object: `workspace:${workspaceId}`,
+          })
           break
         case 'replace':
           replaceList[op.role].push(op.userId)
+
+          deleteTuples.push({
+            user: `user:${op.userId}`,
+            relation: workspaceUsersMap[op.userId].role.toLocaleLowerCase(),
+            object: `workspace:${workspaceId}`,
+          })
+
+          writeTuples.push({
+            user: `user:${op.userId}`,
+            relation: op.role.toLocaleLowerCase(),
+            object: `workspace:${workspaceId}`,
+          })
           break
       }
     }
 
+    // Adding new users to the workspace
     await this.prismaService.workspaceUser.createMany({ data: addList })
 
+    // Changing existing user permissions in the workspace
     const now = new Date()
     await this.prismaService.workspaceUser.updateMany({
       where: { workspaceId, userId: { in: removeList } },
       data: { deletedAt: now, updatedAt: now },
     })
 
-    for (const role of ['ADMIN', 'GUEST', 'MEMBER'] as const) {
+    for (const role of WORKSPACE_USER_ROLES) {
       await this.prismaService.workspaceUser.updateMany({
         where: { workspaceId, userId: { in: replaceList[role] } },
         data: { role },
       })
     }
+
+    await this.openFgaService.write({
+      writes: writeTuples,
+      deletes: deleteTuples,
+    })
+  }
+
+  async getByUserIds(workspaceId: Workspace['id'], userIds: Array<User['id']>) {
+    return await this.prismaService.workspaceUser.findMany({
+      where: { workspaceId, userId: { in: userIds } },
+    })
   }
 
   async canAccess(user: Pick<User, 'id'>, workspace: Pick<Workspace, 'id'>) {
-    // run a check
-    const response = await this.openFgaService.check({
+    const { allowed } = await this.openFgaService.check({
       user: `user:${user.id}`,
       relation: 'can_access',
       object: `workspace:${workspace.id}`,
     })
 
-    console.log(response)
-    return !!response.allowed
+    return !!allowed
+  }
+
+  async canEditSettings(
+    user: Pick<User, 'id'>,
+    workspace: Pick<Workspace, 'id'>,
+  ) {
+    const { allowed } = await this.openFgaService.check({
+      user: `user:${user.id}`,
+      relation: 'can_edit_settings',
+      object: `workspace:${workspace.id}`,
+    })
+
+    return !!allowed
   }
 }

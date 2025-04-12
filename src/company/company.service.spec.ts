@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { OpenFgaService } from './open-fga.service'
+import { CompanyService } from './company.service'
 
-describe('OpenFgaService', () => {
-  let service: OpenFgaService
+describe('CompanyService', () => {
+  let service: CompanyService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [OpenFgaService],
+      providers: [CompanyService],
     }).compile()
 
-    service = module.get<OpenFgaService>(OpenFgaService)
+    service = module.get<CompanyService>(CompanyService)
   })
 
   it('should be defined', () => {

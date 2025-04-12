@@ -4,19 +4,36 @@ import { PrismaService } from '../data/prisma.service'
 import { Prisma, User } from '../../generated/prisma'
 import { CreateUserRequestDto } from './dto/create-user-request.dto'
 import { UserListRequestDto } from './dto/user-list-request.dto'
+import { OpenFgaService } from '../data/open-fga.service'
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly idService: IdService,
+    private readonly openFgaService: OpenFgaService,
     private readonly prismaService: PrismaService,
   ) {}
 
   async create({ companyId, displayName, username }: CreateUserRequestDto) {
     const id = this.idService.generate('user')
+
     const user = await this.prismaService.user.create({
       data: { id, displayName, username, companyId },
     })
+
+    // if the user belongs to a company, create the relationship as well
+    if (companyId) {
+      await this.openFgaService.write({
+        writes: [
+          {
+            user: `user:${user.id}`,
+            relation: 'member',
+            object: `company:${companyId}`,
+          },
+        ],
+      })
+    }
+
     return user
   }
 
@@ -36,9 +53,9 @@ export class UserService {
         : { take: size }
 
     const users = await this.prismaService.user.findMany({
+      ...queryOptions,
       where: { companyId: dto.companyId },
       orderBy: { [dto.sortField]: dto.sortDirection },
-      ...queryOptions,
     })
 
     const hasMore = users.length === size

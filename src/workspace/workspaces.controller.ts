@@ -19,6 +19,7 @@ import { PatchWorkspaceUserRequestDto } from './dto/patch-workspace-user-request
 import { WorkspaceUserListResponseDto } from './dto/workspace-user-list-response.dto'
 import { WorkspaceUserService } from './workspace-user.service'
 import { ShowWorkspaceRequestSchemaDto } from './dto/show-workspace-request.dto'
+import { UpdateWorkspaceRequestSchemaDto } from './dto/update-workspace-request.dto'
 
 @Controller('workspaces')
 export class WorkspacesController {
@@ -61,8 +62,6 @@ export class WorkspacesController {
     @Param('id') workspaceId: string,
     @Query() dto: ShowWorkspaceRequestSchemaDto,
   ) {
-    console.log('trying to access workspace as', dto)
-
     const allowed = await this.workspaceUserService.canAccess(
       { id: dto.as },
       { id: workspaceId },
@@ -72,6 +71,25 @@ export class WorkspacesController {
     }
 
     return await this.workspaceService.getById(workspaceId)
+  }
+
+  /**
+   * Edit settings
+   */
+  @Patch(':id')
+  async update(
+    @Param('id') workspaceId: string,
+    @Body() dto: UpdateWorkspaceRequestSchemaDto,
+  ) {
+    const allowed = await this.workspaceUserService.canEditSettings(
+      { id: dto.as },
+      { id: workspaceId },
+    )
+    if (!allowed) {
+      throw new ForbiddenException()
+    }
+
+    return await this.workspaceService.update(workspaceId, dto)
   }
 
   /**
@@ -96,8 +114,18 @@ export class WorkspacesController {
   @HttpCode(204)
   async updateUsers(
     @Param('id') workspaceId: string,
-    @Body() list: PatchWorkspaceUserRequestDto,
+    @Body() dto: PatchWorkspaceUserRequestDto,
   ): Promise<void> {
-    await this.workspaceUserService.updateUsers(workspaceId, list)
+    const workspaceUsers = await this.workspaceUserService.getByUserIds(
+      workspaceId,
+      dto.map((op) => op.userId),
+    )
+    console.log('found those users to edit', { workspaceUsers })
+
+    await this.workspaceUserService.updateUsers(
+      workspaceId,
+      dto,
+      workspaceUsers,
+    )
   }
 }

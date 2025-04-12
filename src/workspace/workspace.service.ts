@@ -4,6 +4,7 @@ import { PrismaService } from '../data/prisma.service'
 import { Prisma, User, Workspace } from '../../generated/prisma'
 import { WorkspaceListRequestDto } from './dto/workspace-list-request.dto'
 import { OpenFgaService } from '../data/open-fga.service'
+import { UpdateWorkspaceRequestSchemaDto } from './dto/update-workspace-request.dto'
 
 @Injectable()
 export class WorkspaceService {
@@ -30,7 +31,7 @@ export class WorkspaceService {
       ],
     })
 
-    // [admin] add the admin to the workspace user table
+    // [admin view] add the admin to the workspace user table
     await this.prismaService.workspaceUser.create({
       data: {
         user: { connect: admin },
@@ -73,5 +74,16 @@ export class WorkspaceService {
     const result = hasMore ? workspaces.slice(...sliceOptions) : workspaces
 
     return [hasMore, result]
+  }
+
+  async update(
+    id: Workspace['id'],
+    dto: Omit<UpdateWorkspaceRequestSchemaDto, 'as'>,
+  ) {
+    const workspace = await this.prismaService.workspace.update({
+      where: { id },
+      data: { name: dto.workspaceName },
+    })
+    return workspace
   }
 }

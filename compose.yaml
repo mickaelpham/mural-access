@@ -23,6 +23,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    volumes:
+      - openfga_db_data:/var/lib/postgresql/data
 
   openfga_migrate:
     depends_on:
@@ -52,3 +54,4 @@ services:
 
 volumes:
   app_db_data:
+  openfga_db_data:
