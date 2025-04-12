@@ -13,12 +13,15 @@ import { CreateGroupRequestDto } from './dto/create-group-request.dto'
 import { GroupListRequestDto } from './dto/group-list-request.dto'
 import { PatchGroupUserRequestDto } from './dto/patch-group-user-request.dto'
 import { GroupUserService } from './group-user.service'
+import { PatchGroupWorkspaceRequestDto } from './dto/patch-group-workspace-request.dto'
+import { GroupWorkspaceService } from './group-workspace.service'
 
 @Controller('groups')
 export class GroupsController {
   constructor(
     private readonly groupService: GroupService,
     private readonly groupUserService: GroupUserService,
+    private readonly groupWorkspaceService: GroupWorkspaceService,
   ) {}
 
   @Post()
@@ -44,5 +47,23 @@ export class GroupsController {
     @Body() dto: PatchGroupUserRequestDto,
   ) {
     await this.groupUserService.updateUsers(groupId, dto)
+  }
+
+  @Patch(':id/workspaces')
+  @HttpCode(204)
+  async updateWorkspaces(
+    @Param('id') groupId: string,
+    @Body() dto: PatchGroupWorkspaceRequestDto,
+  ) {
+    const groupWorkspaces = await this.groupWorkspaceService.getByWorkspaceIds(
+      groupId,
+      dto.map((op) => op.workspaceId),
+    )
+
+    await this.groupWorkspaceService.updateWorkspaces(
+      groupId,
+      dto,
+      groupWorkspaces,
+    )
   }
 }

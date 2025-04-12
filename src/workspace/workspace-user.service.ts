@@ -74,7 +74,7 @@ export class WorkspaceUserService {
     }
     const writeTuples: TupleKey[] = []
     const deleteTuples: TupleKeyWithoutCondition[] = []
-    const workspaceUsersMap = keyBy(workspaceUsers, 'userId')
+    const workspaceUserMap = keyBy(workspaceUsers, 'userId')
 
     for (const op of dto) {
       switch (op.operation) {
@@ -96,7 +96,7 @@ export class WorkspaceUserService {
 
           deleteTuples.push({
             user: `user:${op.userId}`,
-            relation: workspaceUsersMap[op.userId].role.toLocaleLowerCase(),
+            relation: workspaceUserMap[op.userId].role.toLocaleLowerCase(),
             object: `workspace:${workspaceId}`,
           })
           break
@@ -105,7 +105,7 @@ export class WorkspaceUserService {
 
           deleteTuples.push({
             user: `user:${op.userId}`,
-            relation: workspaceUsersMap[op.userId].role.toLocaleLowerCase(),
+            relation: workspaceUserMap[op.userId].role.toLocaleLowerCase(),
             object: `workspace:${workspaceId}`,
           })
 
