@@ -166,7 +166,7 @@ curl --location --request GET 'http://localhost:3000/workspaces/<WORKSPACE_ID>?a
 Add this user to the group
 
 ```sh
-curl --location --request PATCH 'http://localhost:3000/groups/<GROUP_ID>>/users' \
+curl --location --request PATCH 'http://localhost:3000/groups/<GROUP_ID>/users' \
 --header 'Content-Type: application/json' \
 --data-raw '[
   {
